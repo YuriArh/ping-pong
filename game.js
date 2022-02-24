@@ -69,17 +69,14 @@ function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPuddle();
+    drawBricks();
+    collision();
     if (y + dy < ballRadius) {
         dy = -dy;
-        console.log('верх и низ')
     } else if (y + dy > canvas.height - ballRadius) {
         if (x < paddleX + paddleWidth && x > paddleX) {
             dy = -dy;
-            console.log(x)
-            console.log(paddleX)
         } else {
-            console.log(x)
-            console.log(paddleX)
             alert("GAME OVER");
             document.location.reload();
             clearInterval(interval);
@@ -88,7 +85,6 @@ function draw() {
         
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
         dx = -dx;
-        console.log('лево право')
     }
 
     x += dx;
@@ -110,10 +106,65 @@ function draw() {
 
 const interval = setInterval(draw, 10);
 
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
+let bricks = [];
+// function getBricks() {
+//     for(let i=0; i < brickColumnCount; i++) {
+//         bricks[i] = [];
+//         for(let r=0; r<brickRowCount; r++) {
+//             bricks[i][r] = { x: 0, y: 0 };
+//         }
+//     }
+    
+// }
+// getBricks()
+// console.log(bricks[1])    
+
+function drawBricks() {
+    for(let i=0; i < brickColumnCount; i++) {
+        bricks[i] = [];
+        for(let k=0; k<brickRowCount; k++) {
+            bricks[i][k] = { x: 0, y: 0 };
+        }
+    }
+    for(let i=0; i < bricks.length; i++) {
+        for(let k = 0; k < bricks[i].length; k++) {
+            const brickX =(i*(brickWidth+brickPadding)) + brickOffsetLeft;
+            const brickY =(k*(brickHeight+brickPadding)) + brickOffsetTop;
+            bricks[i][k].x = brickX;
+            bricks[i][k].y = brickY;
+            ctx.beginPath();
+            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
+        }
+    }
+    // for(var c=0; c<brickColumnCount; c++) {
+    //     for(var r=0; r<brickRowCount; r++) {
+    //         bricks[c][r].x = 0;
+    //         bricks[c][r].y = 0;
+    //         console.log(bricks[c][r])
+    //     }
+    // }
+}
 
 
-
-
+function collision() {
+    for(let i=0; i < bricks.length; i++) {
+        for(let k = 0; k < bricks[i].length; k++) {
+            const brickObj = bricks[i][k];
+            console.log(brickObj)
+        }
+    }
+}
 
 
 
