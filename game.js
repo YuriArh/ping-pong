@@ -63,6 +63,7 @@ function drawBall() {
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
+    ballObj = {x}
 }
 
 function draw() {
@@ -104,47 +105,32 @@ function draw() {
     }
 }
 
-const interval = setInterval(draw, 10);
-
-const brickRowCount = 3;
-const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
-
 let bricks = [];
-// function getBricks() {
-//     for(let i=0; i < brickColumnCount; i++) {
-//         bricks[i] = [];
-//         for(let r=0; r<brickRowCount; r++) {
-//             bricks[i][r] = { x: 0, y: 0 };
-//         }
-//     }
-    
-// }
-// getBricks()
-// console.log(bricks[1])    
 
 function drawBricks() {
     for(let i=0; i < brickColumnCount; i++) {
         bricks[i] = [];
         for(let k=0; k<brickRowCount; k++) {
-            bricks[i][k] = { x: 0, y: 0 };
+            bricks[i][k] = { x: 0, y: 0, status: 1 };
         }
     }
     for(let i=0; i < bricks.length; i++) {
         for(let k = 0; k < bricks[i].length; k++) {
-            const brickX =(i*(brickWidth+brickPadding)) + brickOffsetLeft;
-            const brickY =(k*(brickHeight+brickPadding)) + brickOffsetTop;
-            bricks[i][k].x = brickX;
-            bricks[i][k].y = brickY;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            if (bricks[i][k].status == 1) {
+                const brickX =(i*(brickWidth+brickPadding)) + brickOffsetLeft;
+                const brickY =(k*(brickHeight+brickPadding)) + brickOffsetTop;
+                bricks[i][k].x = brickX;
+                bricks[i][k].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+                // console.log(bricks[i][k].status);
+            }
+            if (bricks[i][k].status == 0) {
+                ctx.clearRect(bricks[i][k].x, bricks[i][k].y, brickWidth, brickHeight)
+            }
         }
     }
     // for(var c=0; c<brickColumnCount; c++) {
@@ -160,11 +146,46 @@ function drawBricks() {
 function collision() {
     for(let i=0; i < bricks.length; i++) {
         for(let k = 0; k < bricks[i].length; k++) {
-            const brickObj = bricks[i][k];
-            console.log(brickObj)
+            let brickObj = bricks[i][k];
+            if (brickObj.status == 1) {
+                    if (x > brickObj.x && x < brickObj.x + brickWidth && y > brickObj.y && y < brickObj.y + brickHeight) {
+                        dy = -dy;
+                        brickObj.status = 0;
+                        ctx.clearRect(bricks[i][k].x, bricks[i][k].y, brickWidth, brickHeight)
+                        console.log( bricks[i][k].status)
+                }
+            }
         }
     }
 }
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
+
+// function getBricks() {
+//     for(let i=0; i < brickColumnCount; i++) {
+//         bricks[i] = [];
+//         for(let r=0; r<brickRowCount; r++) {
+//             bricks[i][r] = { x: 0, y: 0 };
+//         }
+//     }
+    
+// }
+// getBricks()
+// console.log(bricks[1])    
+
+
+
+
+
+
+const interval = setInterval(draw, 10);
+
 
 
 
