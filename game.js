@@ -20,6 +20,9 @@ const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 
+let score = 0;
+let live = 3;
+
 function drawPuddle() {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
@@ -33,6 +36,7 @@ let leftPressed = false;
 
 document.addEventListener("keydown", keyDownHandler);
 document.addEventListener("keyup", keyUpHandler);
+document.addEventListener('mousemove', mouseMoveHandler);
 
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
@@ -49,6 +53,15 @@ function keyUpHandler(e) {
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = false;
+    }
+}
+
+function mouseMoveHandler(e) {
+    let relativeX = e.clientX - canvas.offsetLeft;
+    
+    if (relativeX > 0 && relativeX < canvas.width) {
+        console.log(relativeX);
+        paddleX = relativeX - paddleWidth/2;
     }
 }
 
@@ -80,15 +93,26 @@ function draw() {
     drawPuddle();
     drawBricks();
     collision();
+    drawScore();
+    drawLives();
     if (y + dy < ballRadius) {
         dy = -dy;
     } else if (y + dy > canvas.height - ballRadius) {
         if (x < paddleX + paddleWidth && x > paddleX) {
             dy = -dy;
         } else {
-            alert("GAME OVER");
-            document.location.reload();
-            clearInterval(interval);
+            live--;
+            if (!live) {
+                alert('Ты проиграл...')
+                document.location.reload();
+                clearInterval(interval);
+            } else {
+                x = canvas.width/2;
+                y = canvas.height-30;
+                paddleX = (canvas.width - paddleWidth) / 2;
+                dx = 2;
+                dy = -2;
+            }
         }
     }
         
@@ -138,9 +162,6 @@ function drawBricks() {
                 ctx.closePath();
                 // console.log(bricks[i][k].status);
             }
-            if (bricks[i][k].status == 0) {
-                ctx.clearRect(bricks[i][k].x, bricks[i][k].y, brickWidth, brickHeight)
-            }
         }
     }
     // for(var c=0; c<brickColumnCount; c++) {
@@ -162,11 +183,28 @@ function collision() {
                         dy = -dy;
                         brickObj.status = 0;
                         ctx.clearRect(bricks[i][k].x, bricks[i][k].y, brickWidth, brickHeight)
-                        console.log( bricks[i][k].status)
+                        score += 1;
+                        if (score == brickColumnCount * brickRowCount) {
+                            alert('ТЫ ПОБЕДИЛ, ПОЗДРАВЛЯЮ!!!');
+                            document.location.reload();
+                            clearInterval(interval);
+                        }
                 }
             }
         }
     }
+}
+
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Счет: "+score, 8, 20);
+}
+
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Жизни: "+live, canvas.width - 75, 20);
 }
 
 
