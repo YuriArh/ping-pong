@@ -12,6 +12,14 @@ let ballRadius = 10;
 let dx = 2;
 let dy = -2;
 
+const brickRowCount = 3;
+const brickColumnCount = 5;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
 function drawPuddle() {
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
@@ -107,13 +115,15 @@ function draw() {
 
 let bricks = [];
 
-function drawBricks() {
-    for(let i=0; i < brickColumnCount; i++) {
-        bricks[i] = [];
-        for(let k=0; k<brickRowCount; k++) {
-            bricks[i][k] = { x: 0, y: 0, status: 1 };
-        }
+for(let i=0; i < brickColumnCount; i++) {
+    bricks[i] = [];
+    for(let k=0; k<brickRowCount; k++) {
+        bricks[i][k] = { x: 0, y: 0, status: 1 };
     }
+}
+
+function drawBricks() {
+    
     for(let i=0; i < bricks.length; i++) {
         for(let k = 0; k < bricks[i].length; k++) {
             if (bricks[i][k].status == 1) {
@@ -158,13 +168,7 @@ function collision() {
         }
     }
 }
-const brickRowCount = 3;
-const brickColumnCount = 5;
-const brickWidth = 75;
-const brickHeight = 20;
-const brickPadding = 10;
-const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+
 
 
 // function getBricks() {
